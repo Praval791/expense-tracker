@@ -1,11 +1,14 @@
-import { View, Text } from "react-native";
+import { View, Modal, Text, TouchableOpacity } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 
 import { ListItem } from "../components/ListItem";
 
 import { theme } from "../themes";
+import { useState, useRef } from "react";
+import EraseAllDataModel from "../components/models/EraseAllDataModel";
 
 const Settings = ({ navigation }) => {
+  const [showModal, setShowModal] = useState(false);
   return (
     <View
       style={{
@@ -40,7 +43,12 @@ const Settings = ({ navigation }) => {
         }
         onClick={() => {}}
       />
-      <ListItem label="Erase all Data" isDestructive onClick={() => {}} />
+      <ListItem
+        label="Erase all Data"
+        isDestructive
+        onClick={() => setShowModal(true)}
+      />
+      <EraseAllDataModel {...{ showModal, setShowModal }} />
     </View>
   );
 };

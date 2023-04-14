@@ -6,15 +6,16 @@ import {
   TextInput,
   ScrollView,
   Text,
-  Alert,
 } from "react-native";
 import { useState, useRef, ReactNode } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Swipeable, RectButton } from "react-native-gesture-handler";
 import { TriangleColorPicker, fromHsv } from "react-native-color-picker";
+import { useToast } from "react-native-toast-notifications";
 
 import { theme } from "../themes";
 import { CategoryRow } from "../components/CategoryRow";
+import ColorPickerModel from "../components/models/ColorPickerModel";
 
 const Categories = ({ navigation }) => {
   const [newName, setNewName] = useState("");
@@ -22,29 +23,90 @@ const Categories = ({ navigation }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   // const [showAlert, setShowAlert] = useState(false);
   const [categories, setCategories] = useState([]);
+  const toast = useToast();
   const categoriesRef = useRef([]);
-  let prevOpenedRow: any = null,
-    currentOpenRow: any = null;
+  const scrollViewRef = useRef(null);
+  let prevOpenRow: any = null;
 
   const createCategory = () => {
+    const newName_Trimmed = newName.trim();
+    if (!newName_Trimmed.length) {
+      toast.hideAll();
+      toast.show(`Enter a valid Category name`, {
+        type: "normal",
+        placement: "bottom",
+        duration: 3000,
+        animationType: "zoom-in",
+        icon: (
+          <Ionicons
+            name="warning-outline"
+            size={24}
+            color={theme.colors.warning}
+          />
+        ),
+        textStyle: {
+          color: theme.colors.warning,
+          fontSize: 14,
+        },
+      });
+
+      return;
+    }
+
+    if (categories.find(({ name }) => name === newName_Trimmed)) {
+      toast.hideAll();
+
+      toast.show(`Category ${newName_Trimmed} already exists`, {
+        type: "normal",
+        placement: "bottom",
+        duration: 3000,
+        animationType: "zoom-in",
+        icon: (
+          <Ionicons
+            name="warning-outline"
+            size={24}
+            color={theme.colors.warning}
+          />
+        ),
+        textStyle: {
+          color: theme.colors.warning,
+          fontSize: 14,
+        },
+      });
+      return;
+    }
+
     setCategories([
       ...categories,
-      { _id: Math.random() * 100000, name: newName, color: selectedColor },
+      {
+        _id: Math.random() * 100000,
+        name: newName_Trimmed,
+        color: selectedColor,
+      },
     ]);
+
+    toast.hideAll();
+    toast.show(`Category ${newName_Trimmed} Added`, {
+      type: "normal",
+      placement: "bottom",
+      duration: 3000,
+      animationType: "zoom-in",
+      icon: (
+        <Ionicons
+          name="warning-outline"
+          size={24}
+          color={theme.colors.success}
+        />
+      ),
+      textStyle: {
+        color: theme.colors.success,
+        fontSize: 14,
+      },
+    });
+
     setNewName("");
     setSelectedColor(theme.colors.primary);
   };
-
-  // const createTwoButtonAlert = (_id: any) => {
-  //   Alert.alert("Alert Title", "My Alert Msg", [
-  //     {
-  //       text: "Cancel",
-  //       onPress: () => {},
-  //       style: "cancel",
-  //     },
-  //     { text: "OK", onPress: () => deleteCategory(_id), style: "destructive" },
-  //   ]);
-  // };
 
   const deleteCategory = (_id: any) => {
     setCategories(categories.filter((category) => category._id !== _id));
@@ -56,11 +118,8 @@ const Categories = ({ navigation }) => {
   };
 
   const closePrevOpenRow = (e: { target: any }) => {
-    if (
-      currentOpenRow != null &&
-      e.target != categoriesRef.current[currentOpenRow]
-    )
-      categoriesRef.current[currentOpenRow].close();
+    if (prevOpenRow != null && e.target != categoriesRef.current[prevOpenRow])
+      categoriesRef.current[prevOpenRow].close();
   };
 
   return (
@@ -68,20 +127,20 @@ const Categories = ({ navigation }) => {
       <KeyboardAvoidingView
         style={{
           margin: 16,
-          borderRadius: 8,
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
           flex: 1,
         }}
-        onStartShouldSetResponder={() => true}
-        onResponderStart={closePrevOpenRow}
       >
         <ScrollView
           style={{
             flex: 1,
+            marginBottom: 16,
           }}
+          onStartShouldSetResponder={() => true}
+          onTouchStart={closePrevOpenRow}
         >
           {categories.map(({ _id, color, name }, ind) => (
             <Swipeable
@@ -117,7 +176,11 @@ const Categories = ({ navigation }) => {
                   </RectButton>
                 </View>
               )}
-              onSwipeableWillOpen={() => (currentOpenRow = ind)}
+              onSwipeableWillOpen={() => {
+                if (prevOpenRow != null && ind != prevOpenRow)
+                  categoriesRef.current[prevOpenRow].close();
+                prevOpenRow = ind;
+              }}
             >
               <CategoryRow color={color} name={name} />
             </Swipeable>
@@ -179,53 +242,14 @@ const Categories = ({ navigation }) => {
           </View>
         </View>
       </KeyboardAvoidingView>
-      <Modal
-        transparent
-        visible={showColorPicker}
-        animationType="fade"
-        onRequestClose={() => setShowColorPicker(false)}
-      >
-        <View
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 24,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <View
-            style={{
-              padding: 24,
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: theme.colors.card,
-              overflow: "hidden",
-              borderRadius: 12,
-            }}
-          >
-            <TriangleColorPicker
-              hideControls
-              hideSliders
-              color={selectedColor}
-              onColorChange={(color) => setSelectedColor(fromHsv(color))}
-              style={{ width: "100%", height: 300 }}
-            />
-            <TouchableOpacity onPress={() => setShowColorPicker(false)}>
-              <Text
-                style={{
-                  color: theme.colors.primary,
-                  fontSize: 20,
-                }}
-              >
-                select
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <ColorPickerModel
+        {...{
+          showColorPicker,
+          setShowColorPicker,
+          selectedColor,
+          setSelectedColor,
+        }}
+      />
     </>
   );
 };
