@@ -1,11 +1,11 @@
 import { View, Text } from "react-native";
-import React from "react";
+import Entypo from "@expo/vector-icons/Entypo";
+
 import { ListItem } from "../components/ListItem";
 
-import Entypo from "@expo/vector-icons/Entypo";
 import { theme } from "../themes";
 
-const Settings = () => {
+const Settings = ({ navigation }) => {
   return (
     <View
       style={{
@@ -24,7 +24,9 @@ const Settings = () => {
             size={20}
           />
         }
-        onClick={() => {}}
+        onClick={() => {
+          navigation.navigate("Categories");
+        }}
       />
       <ListItem
         label="Report a bug"
