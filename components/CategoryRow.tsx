@@ -25,7 +25,7 @@ export const CategoryRow = ({
       style={{
         backgroundColor: color,
         width: 24,
-        height: 24,
+        aspectRatio: 1 / 1,
         borderRadius: 12,
         borderWidth: 2,
         borderColor: theme.colors.border,

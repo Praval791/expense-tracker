@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { theme } from "../themes";
 import { TabBarIcon } from "../components/TabBarIcons";
@@ -17,6 +16,7 @@ const Home = () => {
         tabBarStyle: {
           backgroundColor: theme.colors.card,
         },
+        tabBarHideOnKeyboard: true,
         headerTitleAlign: "center",
       }}
       key={"Home"}

@@ -1,5 +1,5 @@
 import { View, Text, Modal, TouchableOpacity } from "react-native";
-import { TriangleColorPicker, fromHsv } from "react-native-color-picker";
+import { ColorPicker, fromHsv } from "react-native-color-picker";
 import { theme } from "../../themes";
 
 const ColorPickerModel = ({
@@ -36,12 +36,11 @@ const ColorPickerModel = ({
             borderRadius: 12,
           }}
         >
-          <TriangleColorPicker
-            hideControls
+          <ColorPicker
             hideSliders
             color={selectedColor}
             onColorChange={(color) => setSelectedColor(fromHsv(color))}
-            style={{ width: "100%", height: 300 }}
+            style={{ width: "100%", height: 300, marginBottom: 24 }}
           />
           <TouchableOpacity onPress={() => setShowColorPicker(false)}>
             <Text

@@ -13,7 +13,7 @@ const Settings = ({ navigation }) => {
     <View
       style={{
         margin: 16,
-        borderRadius: 11,
+        borderRadius: 12,
         overflow: "hidden",
       }}
     >

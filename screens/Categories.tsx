@@ -7,10 +7,9 @@ import {
   ScrollView,
   Text,
 } from "react-native";
-import { useState, useRef, ReactNode } from "react";
+import { useState, useRef } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Swipeable, RectButton } from "react-native-gesture-handler";
-import { TriangleColorPicker, fromHsv } from "react-native-color-picker";
 import { useToast } from "react-native-toast-notifications";
 
 import { theme } from "../themes";
@@ -93,7 +92,7 @@ const Categories = ({ navigation }) => {
       animationType: "zoom-in",
       icon: (
         <Ionicons
-          name="warning-outline"
+          name="checkmark-circle-outline"
           size={24}
           color={theme.colors.success}
         />
@@ -200,7 +199,7 @@ const Categories = ({ navigation }) => {
             style={{
               backgroundColor: selectedColor,
               height: 40,
-              width: 40,
+              aspectRatio: 1 / 1,
               borderRadius: 20,
               borderWidth: 3,
               borderColor: theme.colors.border,
@@ -211,7 +210,7 @@ const Categories = ({ navigation }) => {
               height: 40,
               borderColor: theme.colors.border,
               borderWidth: 1,
-              borderRadius: 8,
+              borderRadius: 12,
               flexDirection: "row",
               flex: 1,
               marginLeft: 16,
@@ -222,7 +221,8 @@ const Categories = ({ navigation }) => {
               inputMode="text"
               placeholder="Category name"
               placeholderTextColor={theme.colors.textSecondary}
-              onChange={(event) => setNewName(event.nativeEvent.text)}
+              onChange={(e) => setNewName(e.nativeEvent.text)}
+              onSubmitEditing={createCategory}
               value={newName}
               cursorColor={theme.colors.text}
               style={{
