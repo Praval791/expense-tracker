@@ -15,16 +15,15 @@ import { useToast } from "react-native-toast-notifications";
 import { theme } from "../themes";
 import { CategoryRow } from "../components/CategoryRow";
 import ColorPickerModel from "../components/models/ColorPickerModel";
+import { Category } from "../types/category";
 
 const Categories = ({ navigation }) => {
   const [newName, setNewName] = useState("");
   const [selectedColor, setSelectedColor] = useState(theme.colors.primary);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  // const [showAlert, setShowAlert] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const toast = useToast();
   const categoriesRef = useRef([]);
-  const scrollViewRef = useRef(null);
   let prevOpenRow: any = null;
 
   const createCategory = () => {
@@ -78,7 +77,7 @@ const Categories = ({ navigation }) => {
     setCategories([
       ...categories,
       {
-        _id: Math.random() * 100000,
+        _id: (Math.random() * 100000).toString(),
         name: newName_Trimmed,
         color: selectedColor,
       },

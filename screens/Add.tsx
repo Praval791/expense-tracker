@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   Keyboard,
   Platform,
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useMemo, useRef } from "react";
 import { ListItem } from "../components/ListItem";
@@ -18,19 +19,8 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { useToast } from "react-native-toast-notifications";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
-const categories = [
-  { _id: 1, name: "Category 1", color: "#FF0000" },
-  { _id: 2, name: "Category 2", color: "#00FF00" },
-  { _id: 3, name: "Category 3", color: "#0000FF" },
-  { _id: 4, name: "Category 4", color: "#FFFF00" },
-  { _id: 5, name: "Category 5", color: "#00FFFF" },
-  { _id: 6, name: "Category 6", color: "#FF00FF" },
-  { _id: 7, name: "Category 7", color: "#C0C0C0" },
-  { _id: 8, name: "Category 8", color: "#808080" },
-  { _id: 9, name: "Category 9", color: "#800000" },
-  { _id: 10, name: "Category 10", color: "#008000" },
-];
+import { Category } from "../types/category";
+import { categories } from "../dummy";
 
 const Add = () => {
   const [amount, setAmount] = React.useState("");
@@ -39,9 +29,9 @@ const Add = () => {
   );
   const [date, setDate] = React.useState(new Date());
   const [note, setNote] = React.useState("");
-  const [category, setCategory] = React.useState(categories[0]);
+  const [category, setCategory] = React.useState<Category>(categories[0]);
 
-  const snapPoints = useMemo(() => ["30%"], []);
+  const snapPoints = useMemo(() => ["30%", "60%"], []);
   const sheetRef = useRef<BottomSheet>(null);
   const [sheetView, setSheetView] = React.useState<"recurrence" | "category">(
     "recurrence"
@@ -68,13 +58,7 @@ const Add = () => {
     sheetRef.current?.close();
   };
 
-  const selectCategory = (
-    selectedCategory: React.SetStateAction<{
-      _id: number;
-      name: string;
-      color: string;
-    }>
-  ) => {
+  const selectCategory = (selectedCategory: Category) => {
     setCategory(selectedCategory);
     sheetRef.current?.close();
   };
@@ -171,7 +155,7 @@ const Add = () => {
 
   return (
     <>
-      <KeyboardAvoidingView
+      <ScrollView
         style={{
           margin: 16,
           overflow: "hidden",
@@ -313,7 +297,7 @@ const Add = () => {
             Add expense
           </Text>
         </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </ScrollView>
       <BottomSheet
         ref={sheetRef}
         snapPoints={snapPoints}
