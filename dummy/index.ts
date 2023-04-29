@@ -18,7 +18,7 @@ export const categories: Category[] = [
 export const dummyExpenses: Expense[] = [
   {
     _id: "1",
-    amount: 10.5,
+    amount: 6,
     recurrence: Recurrence.None,
     date: new Date("2023-04-22"),
     note: "Lunch at McDonald's",
@@ -26,7 +26,7 @@ export const dummyExpenses: Expense[] = [
   },
   {
     _id: "2",
-    amount: 20.0,
+    amount: 0,
     recurrence: Recurrence.Weekly,
     date: new Date("2023-04-23"),
     note: "Gasoline for car",
@@ -34,7 +34,7 @@ export const dummyExpenses: Expense[] = [
   },
   {
     _id: "3",
-    amount: 5.99,
+    amount: 4,
     recurrence: Recurrence.None,
     date: new Date("2023-04-20"),
     note: "Spotify subscription",
@@ -42,7 +42,7 @@ export const dummyExpenses: Expense[] = [
   },
   {
     _id: "4",
-    amount: 15.75,
+    amount: 6,
     recurrence: Recurrence.Monthly,
     date: new Date("2023-04-15"),
     note: "Movie ticket",
@@ -50,15 +50,75 @@ export const dummyExpenses: Expense[] = [
   },
   {
     _id: "5",
-    amount: 100.0,
+    amount: 5,
     recurrence: Recurrence.Yearly,
-    date: new Date("2023-12-31"),
+    date: new Date("2023-12-29"),
     note: "New Year's Eve party",
     category: categories[4],
   },
 ];
 
 export const dummyExpenseGroups: ExpenseGroup[] = [
+  {
+    day: "2023-03-22",
+    expenses: [
+      {
+        _id: "1",
+        amount: 10.5,
+        recurrence: Recurrence.None,
+        date: new Date("2023-04-22"),
+        note: "Lunch at McDonald's",
+        category: {
+          _id: "1",
+          color: "#FF0000",
+          name: "Food",
+        },
+      },
+      {
+        _id: "6",
+        amount: 35.0,
+        recurrence: Recurrence.None,
+        date: new Date("2023-04-22"),
+        note: "Groceries",
+        category: {
+          _id: "4",
+          color: "#FFFF00",
+          name: "Shopping",
+        },
+      },
+    ],
+    total: 45.5,
+  },
+  {
+    day: "2023-01-22",
+    expenses: [
+      {
+        _id: "2",
+        amount: 20.0,
+        recurrence: Recurrence.Weekly,
+        date: new Date("2023-04-23"),
+        note: "Gasoline for car",
+        category: {
+          _id: "2",
+          color: "#0000FF",
+          name: "Transportation",
+        },
+      },
+      {
+        _id: "7",
+        amount: 10.99,
+        recurrence: Recurrence.None,
+        date: new Date("2023-04-23"),
+        note: "Coffee with friends",
+        category: {
+          _id: "3",
+          color: "#008000",
+          name: "Entertainment",
+        },
+      },
+    ],
+    total: 30.99,
+  },
   {
     day: "2023-04-22",
     expenses: [
@@ -90,7 +150,7 @@ export const dummyExpenseGroups: ExpenseGroup[] = [
     total: 45.5,
   },
   {
-    day: "2023-04-23",
+    day: "2023-02-23",
     expenses: [
       {
         _id: "2",
@@ -102,18 +162,6 @@ export const dummyExpenseGroups: ExpenseGroup[] = [
           _id: "2",
           color: "#0000FF",
           name: "Transportation",
-        },
-      },
-      {
-        _id: "7",
-        amount: 10.99,
-        recurrence: Recurrence.None,
-        date: new Date("2023-04-23"),
-        note: "Coffee with friends",
-        category: {
-          _id: "3",
-          color: "#008000",
-          name: "Entertainment",
         },
       },
     ],

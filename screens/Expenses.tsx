@@ -32,6 +32,7 @@ const Expenses = () => {
         style={{
           margin: 16,
           gap: 16,
+          flex: 1,
         }}
       >
         <View
@@ -41,7 +42,7 @@ const Expenses = () => {
             gap: 16,
           }}
         >
-          <Text style={{ color: theme.colors.textPrimary, fontSize: 18 }}>
+          <Text style={{ color: theme.colors.text, fontSize: 18 }}>
             Total for:
           </Text>
           <TouchableOpacity
@@ -71,7 +72,7 @@ const Expenses = () => {
           />
           <Text
             style={{
-              color: theme.colors.textPrimary,
+              color: theme.colors.text,
               fontSize: 40,
               fontWeight: "600",
               marginLeft: 2,

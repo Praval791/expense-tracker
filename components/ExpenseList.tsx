@@ -11,7 +11,6 @@ type ExpenseListProps = {
 const ExpenseList = ({ expenseGroups }: ExpenseListProps) => {
   return (
     <FlatList
-      style={{ height: "100%" }}
       data={expenseGroups}
       keyExtractor={(item) => item.day}
       renderItem={({ item: { day, expenses, total } }) => (

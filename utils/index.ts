@@ -14,3 +14,17 @@ export const getPlainRecurrence = (recurrence: Recurrence) => {
       return "";
   }
 };
+
+export const firstLine = (str: string) => {
+  if (str.length <= 4) return str;
+
+  if (shouldShowSecondLine(str)) return str.substring(0, str.length - 1);
+
+  const dotIndex = str.indexOf(".");
+  if (dotIndex !== -1) return str.substring(0, dotIndex);
+  return str;
+};
+
+export const shouldShowSecondLine = (str: string) => {
+  return str.length > 4 && str.at(-1) >= "A" && str.at(-1) <= "Z";
+};
