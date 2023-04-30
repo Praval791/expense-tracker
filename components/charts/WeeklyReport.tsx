@@ -64,10 +64,6 @@ const WeeklyReport = ({ expenses }: WeeklyReportProps) => {
   const yRange = [0, graphHeight];
   const getY = scaleLinear().domain(yDomain).range(yRange);
 
-  useEffect(() => {
-    console.log(0);
-  });
-
   return (
     <Svg width={SVGWidth} height={SVGHeight}>
       <G y={graphHeight}>

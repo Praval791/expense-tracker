@@ -5,6 +5,8 @@ import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { Recurrence } from "../types/recurrence";
 import WeeklyReport from "../components/charts/WeeklyReport";
 import { dummyExpenses } from "../dummy";
+import YearlyReport from "../components/charts/YearlyReport";
+import Charts from "../components/charts";
 
 type reportProps = {
   reportsSheetRef: MutableRefObject<BottomSheet>;
@@ -12,6 +14,7 @@ type reportProps = {
 
 const Reports = ({ reportsSheetRef }: reportProps) => {
   const [recurrence, setRecurrence] = useState<Recurrence>(Recurrence.Weekly);
+  const [date, setDate] = useState<Date>(new Date());
   const selectRecurrence = (item: Recurrence) => {
     setRecurrence(item);
     reportsSheetRef.current?.close();
@@ -67,8 +70,15 @@ const Reports = ({ reportsSheetRef }: reportProps) => {
             </View>
           </View>
         </View>
-
-        <WeeklyReport expenses={dummyExpenses} />
+        <Charts expenses={dummyExpenses} recurrence={recurrence} start={date} />
+        {/* {recurrence === Recurrence.Weekly && (
+          <WeeklyReport expenses={dummyExpenses} />
+        )}
+        {recurrence === Recurrence.Monthly && <Text>Monthly</Text>}
+        {recurrence === Recurrence.Yearly && (
+          )} */}
+        {/* <YearlyReport expenses={dummyExpenses} /> */}
+        {/* <WeeklyReport expenses={dummyExpenses} /> */}
         <Text style={{ color: theme.colors.text }}>Hey</Text>
       </View>
       <BottomSheet
