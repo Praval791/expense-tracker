@@ -21,7 +21,7 @@ const weekDays = [
 
 const GRAPH_MARGIN = 16;
 const GRAPH_BAR_WIDTH = 40;
-const GRAPH_BAR_HEIGHT = 147;
+const GRAPH_BAR_HEIGHT = 200;
 const GRAPH_LABEL_HEIGHT = 20; // include padding that separates label from axis
 
 const WeeklyReport = ({ expenses }: WeeklyReportProps) => {

@@ -11,7 +11,7 @@ type YearlyReportProps = {
   expenses: Expense[];
 };
 
-const MONTH_DAYS = [
+const MONTH_NAMES = [
   "Jan",
   "Feb",
   "Mar",
@@ -27,11 +27,11 @@ const MONTH_DAYS = [
 ];
 
 const screenWidth = Dimensions.get("window").width;
+const GRAPH_WIDTH = screenWidth + 200;
 const MARGIN = 16;
 const getX = (x: number, width: number, borderWidth: number) => {
-  if (x + width + 2 * borderWidth > screenWidth - MARGIN)
+  if (x + width + 2 * borderWidth > GRAPH_WIDTH - MARGIN)
     return x - width - 2 * borderWidth;
-
   return x;
 };
 
@@ -40,31 +40,29 @@ const TooTip = ({ tooltipPos }) => {
   if (tooltipPos.visible)
     width = Math.max(20 + tooltipPos.value.toString().length * 7, 30);
   return tooltipPos.visible ? (
-    <View>
-      <Svg>
-        <Rect
-          x={getX(tooltipPos.x, width, 2)}
-          y={tooltipPos.y}
-          width={width}
-          height="20"
-          fill={theme.colors.card}
-          rx={8}
-          strokeWidth={2}
-          stroke={theme.colors.border}
-          // fill="red"
-        />
-        <Text
-          x={getX(tooltipPos.x, width, 2) + width / 2}
-          y={tooltipPos.y + 15}
-          fill={theme.colors.textGray}
-          fontSize="14"
-          fontWeight="500"
-          textAnchor="middle"
-        >
-          {tooltipPos.value}
-        </Text>
-      </Svg>
-    </View>
+    <Svg>
+      <Rect
+        x={getX(tooltipPos.x, width, 2)}
+        y={tooltipPos.y}
+        width={width}
+        height="20"
+        fill={theme.colors.card}
+        rx={8}
+        strokeWidth={2}
+        stroke={theme.colors.border}
+        // fill="red"
+      />
+      <Text
+        x={getX(tooltipPos.x, width, 2) + width / 2}
+        y={tooltipPos.y + 15}
+        fill={theme.colors.textGray}
+        fontSize="14"
+        fontWeight="500"
+        textAnchor="middle"
+      >
+        {tooltipPos.value}
+      </Text>
+    </Svg>
   ) : null;
 };
 
@@ -91,7 +89,7 @@ const YearlyReport = ({ expenses }: YearlyReportProps) => {
     if (format(expense).length > 3) leftMargin = -20;
   });
   const data = {
-    labels: MONTH_DAYS,
+    labels: MONTH_NAMES,
     datasets: [
       {
         data: expensesToMonths,
@@ -123,11 +121,11 @@ const YearlyReport = ({ expenses }: YearlyReportProps) => {
     <ScrollView horizontal>
       <LineChart
         data={data}
-        width={screenWidth + 200}
+        width={GRAPH_WIDTH}
         height={220}
         chartConfig={{
           backgroundGradientFrom: theme.colors.barBackground,
-          backgroundGradientFromOpacity: 0,
+          backgroundGradientFromOpacity: 0.5,
           backgroundGradientTo: theme.colors.barBackground,
           backgroundGradientToOpacity: 0.5,
           color: () => theme.colors.textSecondary,
