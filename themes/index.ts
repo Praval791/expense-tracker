@@ -11,7 +11,7 @@ export const theme = {
     success: "#4BB543",
     text: "#FFFFFF",
     textSecondary: "#EBEBF599",
-    barBackground: "#262626",
+    barBackground: "#3A3A3A",
     textGray: "#606060",
     transparentBackground: "#00000080",
     warning: "#FFA500",

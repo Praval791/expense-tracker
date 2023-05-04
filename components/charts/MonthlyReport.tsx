@@ -17,6 +17,7 @@ const getX = (x: number, width: number, borderWidth: number) => {
     return x - width - 2 * borderWidth;
   return x;
 };
+
 const TooTip = ({ tooltipPos }) => {
   let width = 40;
   if (tooltipPos.visible)
@@ -104,16 +105,18 @@ const MonthlyReport = ({ expenses, date }: MonthlyReportProps) => {
     ],
   };
   return (
-    <ScrollView horizontal>
+    <ScrollView horizontal nestedScrollEnabled>
       <LineChart
         data={data}
         width={GRAPH_WIDTH}
         height={220}
         chartConfig={{
           backgroundGradientFrom: theme.colors.barBackground,
-          backgroundGradientFromOpacity: 0.5,
+          backgroundGradientFromOpacity: 0.2,
           backgroundGradientTo: theme.colors.barBackground,
-          backgroundGradientToOpacity: 0.5,
+          backgroundGradientToOpacity: 0.2,
+          fillShadowGradient: theme.colors.primary,
+          fillShadowGradientOpacity: 0.3,
           color: () => theme.colors.textSecondary,
         }}
         // bezier

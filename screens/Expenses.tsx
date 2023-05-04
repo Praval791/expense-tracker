@@ -1,31 +1,28 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useRef } from "react";
+import React from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import { dummyExpenseGroups } from "../dummy";
+import { dummyExpenses as totalExpenses } from "../dummy";
 import ExpenseList from "../components/ExpenseList";
 import { theme } from "../themes";
-import BottomSheet, {
-  BottomSheetFlatList,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Recurrence } from "../types/recurrence";
 import { TouchableHighlight } from "react-native";
-import { getPlainRecurrence } from "../utils";
+import { getPlainRecurrence } from "../utils/recurrence";
+import { getGroupedExpenses } from "../utils/expenses";
 
 const Expenses = () => {
   const recurrenceSheetRef = React.useRef<BottomSheet>(null);
   const [recurrence, setRecurrence] = React.useState<Recurrence>(
     Recurrence.Weekly
   );
-  const total = dummyExpenseGroups.reduce(
-    (sum, group) => (sum += group.total),
-    0
-  );
+  const groupedExpenses = getGroupedExpenses(totalExpenses, recurrence);
+  const total = groupedExpenses.reduce((sum, group) => (sum += group.total), 0);
 
   const changeRecurrence = (newRecurrence: Recurrence) => {
     setRecurrence(newRecurrence);
     recurrenceSheetRef.current?.close();
   };
+
   return (
     <>
       <View
@@ -49,11 +46,17 @@ const Expenses = () => {
             activeOpacity={0.6}
             onPress={() => recurrenceSheetRef.current?.expand()}
           >
-            <Text>
+            <View style={{ gap: 2, flexDirection: "row" }}>
+              <FontAwesome
+                name="angle-down"
+                size={20}
+                color={theme.colors.primary}
+                style={{ alignSelf: "center" }}
+              />
               <Text style={{ color: theme.colors.primary, fontSize: 18 }}>
                 This {getPlainRecurrence(recurrence)}
               </Text>
-            </Text>
+            </View>
           </TouchableOpacity>
         </View>
         <View
@@ -81,7 +84,17 @@ const Expenses = () => {
             {total}
           </Text>
         </View>
-        <ExpenseList expenseGroups={dummyExpenseGroups} />
+        {groupedExpenses.length > 0 ? (
+          <ExpenseList expenseGroups={groupedExpenses} />
+        ) : (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text style={{ color: theme.colors.textSecondary, fontSize: 18 }}>
+              No expenses for this period
+            </Text>
+          </View>
+        )}
       </View>
       <BottomSheet
         snapPoints={[150]}

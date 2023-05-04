@@ -1,86 +1,152 @@
-import { View, Text, TouchableHighlight } from "react-native";
-import React, { MutableRefObject, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  FlatList,
+  Dimensions,
+} from "react-native";
+import React, {
+  MutableRefObject,
+  useState,
+  useReducer,
+  useRef,
+  useMemo,
+} from "react";
 import { theme } from "../themes";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { Recurrence } from "../types/recurrence";
 import WeeklyReport from "../components/charts/WeeklyReport";
-import { dummyExpenses } from "../dummy";
+import { dummyExpenseGroups } from "../dummy";
+import { dummyExpenses as totalExpenses } from "../dummy";
 import YearlyReport from "../components/charts/YearlyReport";
 import Charts from "../components/charts";
+import ExpenseList from "../components/ExpenseList";
+import { ReportPageProps } from "../types/reportPageProps";
+import {
+  filterExpensesInPeriod,
+  getAverageAmountInPeriod,
+} from "../utils/expenses";
+import ReportPage from "../components/ReportPage";
 
 type reportProps = {
   reportsSheetRef: MutableRefObject<BottomSheet>;
 };
 
+enum PagerActionType {
+  SET_RECURRENCE = "SET_RECURRENCE",
+}
+
+type PagerReducerAction = {
+  type: PagerActionType;
+  payload: any;
+};
+
+type PagerState = {
+  recurrence: Recurrence;
+  numberOfPages: number;
+};
+
+const initialValues: PagerState = {
+  recurrence: Recurrence.Weekly,
+  numberOfPages: 53,
+};
+
+const pagerReducer = (state: PagerState, action: PagerReducerAction) => {
+  switch (action.type) {
+    case PagerActionType.SET_RECURRENCE:
+      var newNumberOfPages = 1;
+      switch (action.payload) {
+        case Recurrence.Weekly:
+          newNumberOfPages = 53;
+          break;
+        case Recurrence.Monthly:
+          newNumberOfPages = 12;
+          break;
+        case Recurrence.Yearly:
+          newNumberOfPages = 1;
+          break;
+      }
+      return {
+        ...state,
+        numberOfPages: newNumberOfPages,
+        recurrence: action.payload,
+        page: 0,
+      };
+
+    default:
+      return state;
+  }
+};
+
 const Reports = ({ reportsSheetRef }: reportProps) => {
-  const [recurrence, setRecurrence] = useState<Recurrence>(Recurrence.Weekly);
-  const [date, setDate] = useState<Date>(new Date());
-  const selectRecurrence = (item: Recurrence) => {
-    setRecurrence(item);
+  const [state, dispatch] = useReducer(pagerReducer, initialValues);
+  const listRef = useRef<FlatList>(null);
+
+  const selectRecurrence = (selectedRecurrence: Recurrence) => {
+    dispatch({
+      type: PagerActionType.SET_RECURRENCE,
+      payload: selectedRecurrence,
+    });
     reportsSheetRef.current?.close();
+    listRef.current.scrollToIndex({ index: 0 });
+  };
+
+  const pagePropsData = useMemo(
+    () =>
+      Array(state.numberOfPages)
+        .fill(undefined)
+        .map<ReportPageProps>((_, page) => {
+          const filteredExpenses = filterExpensesInPeriod(
+            totalExpenses,
+            state.recurrence,
+            page
+          );
+          const total = filteredExpenses.reduce(
+            (acc, expense) => acc + expense.amount,
+            0
+          );
+          const average = getAverageAmountInPeriod(total, state.recurrence);
+          return {
+            page,
+            total,
+            average,
+            expenses: filteredExpenses,
+            recurrence: state.recurrence,
+          };
+        }),
+    [state.numberOfPages, totalExpenses]
+  );
+
+  const onPreviousPage = (page: number) => {
+    listRef.current.scrollToIndex({ index: page + 1 });
+  };
+  const onNextPage = (page: number) => {
+    listRef.current.scrollToIndex({ index: page - 1 });
   };
 
   return (
     <>
-      <View
-        style={{
-          margin: 16,
-          gap: 16,
-          flex: 1,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ gap: 8 }}>
-            <Text style={{ color: theme.colors.text, fontSize: 20 }}>
-              12REC - 13DEC
-            </Text>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 4,
-              }}
-            >
-              <Text style={{ color: theme.colors.textSecondary, fontSize: 16 }}>
-                INR
-              </Text>
-              <Text style={{ color: theme.colors.text, fontSize: 16 }}>85</Text>
-            </View>
-          </View>
-          <View style={{ alignItems: "flex-end", gap: 8 }}>
-            <Text style={{ color: theme.colors.text, fontSize: 20 }}>
-              Avg/Day
-            </Text>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 4,
-              }}
-            >
-              <Text style={{ color: theme.colors.textSecondary, fontSize: 16 }}>
-                INR
-              </Text>
-              <Text style={{ color: theme.colors.text, fontSize: 16 }}>25</Text>
-            </View>
-          </View>
-        </View>
-        <Charts expenses={dummyExpenses} recurrence={recurrence} start={date} />
-        {/* {recurrence === Recurrence.Weekly && (
-          <WeeklyReport expenses={dummyExpenses} />
+      <FlatList
+        data={pagePropsData}
+        ref={listRef}
+        horizontal
+        nestedScrollEnabled
+        scrollEnabled={false}
+        inverted
+        initialNumToRender={5}
+        windowSize={5}
+        decelerationRate="fast"
+        snapToAlignment="start"
+        snapToInterval={Dimensions.get("window").width}
+        style={{ flex: 1 }}
+        renderItem={({ item: pageProp, index: currPageNum }) => (
+          <ReportPage
+            {...pageProp}
+            onPreviousPage={onPreviousPage}
+            onNextPage={onNextPage}
+          />
         )}
-        {recurrence === Recurrence.Monthly && <Text>Monthly</Text>}
-        {recurrence === Recurrence.Yearly && (
-          )} */}
-        {/* <YearlyReport expenses={dummyExpenses} /> */}
-        {/* <WeeklyReport expenses={dummyExpenses} /> */}
-        <Text style={{ color: theme.colors.text }}>Hey</Text>
-      </View>
+      />
       <BottomSheet
         snapPoints={[200]}
         ref={reportsSheetRef}
@@ -111,7 +177,7 @@ const Reports = ({ reportsSheetRef }: reportProps) => {
                   fontSize: 18,
                   textTransform: "capitalize",
                   color:
-                    recurrence === item
+                    state.recurrence === item
                       ? theme.colors.primary
                       : theme.colors.text,
                 }}

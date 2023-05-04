@@ -13,7 +13,12 @@ type ChartsProps = {
 
 const Charts = ({ recurrence, start, expenses }: ChartsProps) => {
   return (
-    <View>
+    <View
+      onStartShouldSetResponder={(event) => true}
+      onTouchEnd={(e) => {
+        e.stopPropagation();
+      }}
+    >
       {recurrence === Recurrence.Weekly && <WeeklyReport expenses={expenses} />}
       {recurrence === Recurrence.Monthly && (
         <MonthlyReport date={start} expenses={expenses} />
