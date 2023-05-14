@@ -2,7 +2,6 @@ import {
   View,
   KeyboardAvoidingView,
   TouchableOpacity,
-  Modal,
   TextInput,
   ScrollView,
   Text,
@@ -16,12 +15,55 @@ import { theme } from "../themes";
 import { CategoryRow } from "../components/CategoryRow";
 import ColorPickerModel from "../components/models/ColorPickerModel";
 import { Category } from "../types/category";
+import DeleteCategoryModel from "../components/models/DeleteCategoryModel";
+
+import { categories as dummyCategories } from "../dummy";
+
+const CategoryRowRightRender = ({ handleDelete, ind, _id, name, color }) => {
+  const [showDeleteCategory, setShowDeleteCategory] = useState(false);
+
+  return (
+    <>
+      <View
+        style={{
+          backgroundColor: theme.colors.error,
+          width: "100%",
+        }}
+      >
+        <RectButton
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={() => setShowDeleteCategory(true)}
+        >
+          <Ionicons name="trash-outline" size={24} color={theme.colors.text} />
+          <Text
+            style={{
+              color: theme.colors.text,
+            }}
+          >
+            Delete
+          </Text>
+        </RectButton>
+      </View>
+      <DeleteCategoryModel
+        name={name}
+        color={color}
+        showModal={showDeleteCategory}
+        setShowModal={setShowDeleteCategory}
+        deleteCategory={() => handleDelete(ind, _id)}
+      />
+    </>
+  );
+};
 
 const Categories = ({ navigation }) => {
   const [newName, setNewName] = useState("");
   const [selectedColor, setSelectedColor] = useState(theme.colors.primary);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>(dummyCategories);
   const toast = useToast();
   const categoriesRef = useRef([]);
   let prevOpenRow: any = null;
@@ -145,34 +187,13 @@ const Categories = ({ navigation }) => {
               key={ind}
               ref={(ref) => (categoriesRef.current[ind] = ref)}
               renderRightActions={() => (
-                <View
-                  style={{
-                    backgroundColor: theme.colors.error,
-                    width: "100%",
-                  }}
-                >
-                  <RectButton
-                    style={{
-                      flex: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    onPress={() => handleDelete(ind, _id)}
-                  >
-                    <Ionicons
-                      name="trash-outline"
-                      size={24}
-                      color={theme.colors.text}
-                    />
-                    <Text
-                      style={{
-                        color: theme.colors.text,
-                      }}
-                    >
-                      Delete
-                    </Text>
-                  </RectButton>
-                </View>
+                <CategoryRowRightRender
+                  handleDelete={handleDelete}
+                  _id={_id}
+                  ind={ind}
+                  name={name}
+                  color={color}
+                ></CategoryRowRightRender>
               )}
               onSwipeableWillOpen={() => {
                 if (prevOpenRow != null && ind != prevOpenRow)
@@ -180,7 +201,7 @@ const Categories = ({ navigation }) => {
                 prevOpenRow = ind;
               }}
             >
-              <CategoryRow color={color} name={name} />
+              <CategoryRow color={color} name={name} _id={_id} />
             </Swipeable>
           ))}
         </ScrollView>

@@ -68,6 +68,10 @@ const RenderItem = ({ item: { day, expenses, total } }) => (
 const ExpenseList = ({ expenseGroups }: ExpenseListProps) => {
   return (
     <FlatList
+      onStartShouldSetResponder={(event) => true}
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchEnd={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
       data={expenseGroups}
       keyExtractor={(item) => item.day}
       ItemSeparatorComponent={() => <View style={{ height: 24 }} />}

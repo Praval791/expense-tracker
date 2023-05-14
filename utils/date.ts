@@ -1,4 +1,11 @@
-import { format, add, previousSunday, sub, nextSaturday } from "date-fns";
+import {
+  format,
+  add,
+  previousSunday,
+  sub,
+  nextSaturday,
+  isSunday,
+} from "date-fns";
 
 import { Recurrence } from "../types/recurrence";
 
@@ -15,6 +22,8 @@ export const formatDateRange = (start: Date, end: Date, period: Recurrence) => {
   return format(start, "d MMM") + " - " + format(end, "d MMM");
 };
 
+export const formatDate = (date: Date) => format(date, "MMM d, yyyy h:mm a");
+
 export const calculateRange = (period: Recurrence, periodIndex: number) => {
   const now = new Date();
   let start: Date;
@@ -30,7 +39,7 @@ export const calculateRange = (period: Recurrence, periodIndex: number) => {
       });
       break;
     case Recurrence.Weekly:
-      const firstDayOfThisWeek = previousSunday(now);
+      const firstDayOfThisWeek = isSunday(now) ? now : previousSunday(now);
       const daysToSubtract = periodIndex * 7;
       start = sub(firstDayOfThisWeek, { days: daysToSubtract });
       end = nextSaturday(start);

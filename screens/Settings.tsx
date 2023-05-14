@@ -32,6 +32,20 @@ const Settings = ({ navigation }) => {
         }}
       />
       <ListItem
+        label="Expenses"
+        detail={
+          <Entypo
+            name="chevron-thin-right"
+            color={theme.colors.text}
+            style={{ opacity: 0.3 }}
+            size={20}
+          />
+        }
+        onClick={() => {
+          navigation.navigate("Expenses");
+        }}
+      />
+      <ListItem
         label="Report a bug"
         detail={
           <Entypo

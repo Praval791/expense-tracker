@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  KeyboardAvoidingView,
   TouchableOpacity,
   TextInput,
   TouchableHighlight,
@@ -9,7 +8,7 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { ListItem } from "../components/ListItem";
 import { theme } from "../themes";
 import { Recurrence } from "../types/recurrence";
@@ -334,7 +333,9 @@ const Add = () => {
                 }}
                 onPress={() => selectRecurrence(item)}
               >
-                <Text style={{ color: "white", fontSize: 18 }}>{item}</Text>
+                <Text style={{ color: theme.colors.text, fontSize: 18 }}>
+                  {item}
+                </Text>
               </TouchableHighlight>
             ))}
           </BottomSheetScrollView>
@@ -389,8 +390,6 @@ const Add = () => {
     </>
   );
 };
-
-export default Add;
 
 const DateTimePickerDetail = ({ date, setDate, sheetRef }) => {
   if (Platform.OS === "ios") {
@@ -455,26 +454,4 @@ const DateTimePickerDetail = ({ date, setDate, sheetRef }) => {
     </TouchableOpacity>
   );
 };
-
-{
-  /* {sheetView === "recurrence" && (
-          <BottomSheetFlatList
-            data={Object.keys(Recurrence)}
-            keyExtractor={(i) => i}
-            renderItem={({ item, index }) => (
-              <TouchableHighlight
-                style={{
-                  paddingHorizontal: 18,
-                  paddingVertical: 12,
-                  borderBottomColor: theme.colors.border,
-                  borderBottomWidth:
-                    index === Object.keys(Recurrence).length - 1 ? 0 : 1,
-                }}
-                onPress={() => selectRecurrence(item)}
-              >
-                <Text style={{ color: "white", fontSize: 18 }}>{item}</Text>
-              </TouchableHighlight>
-            )}
-          />
-        )} */
-}
+export default Add;

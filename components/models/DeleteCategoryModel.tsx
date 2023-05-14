@@ -2,9 +2,16 @@ import { TouchableOpacity, View, Text, Modal } from "react-native";
 import { useRef } from "react";
 import { theme } from "../../themes";
 
-const EraseAllDataModel = ({ showModal, setShowModal }) => {
+const DeleteCategoryModel = ({
+  showModal,
+  setShowModal,
+  name,
+  deleteCategory,
+  color,
+}) => {
   const card = useRef([]);
-  const handleEraseData = () => {
+  const handleDelete = () => {
+    deleteCategory();
     setShowModal(false);
   };
   return (
@@ -29,20 +36,21 @@ const EraseAllDataModel = ({ showModal, setShowModal }) => {
       >
         <View // card
           style={{
-            width: "60%",
+            width: "70%",
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: theme.colors.card,
             overflow: "hidden",
             borderRadius: 12,
-            height: 120,
+            height: 140,
           }}
         >
           <View // card top
             style={{
-              gap: 2,
               width: "100%",
-              flex: 2,
+              flex: 5,
+              gap: 10,
+              paddingHorizontal: 10,
               borderBottomColor: theme.colors.border,
               borderBottomWidth: 1,
               justifyContent: "center",
@@ -64,17 +72,20 @@ const EraseAllDataModel = ({ showModal, setShowModal }) => {
                 textAlign: "center",
                 fontSize: 16,
                 color: theme.colors.text,
+                // letterSpacing: 0.5,
+                lineHeight: 20,
               }}
               ref={(ref) => (card.current[1] = ref)}
             >
-              This action cannot be undone.
+              This will permanently delete all the expenses associate with{" "}
+              <Text style={{ color: color }}>{name}</Text> Category.
             </Text>
           </View>
           <View // card bottom
             style={{
               flexDirection: "row",
               width: "100%",
-              flex: 1,
+              flex: 2,
             }}
           >
             <TouchableOpacity
@@ -89,8 +100,9 @@ const EraseAllDataModel = ({ showModal, setShowModal }) => {
             >
               <Text
                 style={{
-                  color: theme.colors.primary,
                   fontSize: 18,
+
+                  color: theme.colors.primary,
                 }}
               >
                 Cancel
@@ -104,15 +116,15 @@ const EraseAllDataModel = ({ showModal, setShowModal }) => {
                 borderLeftColor: theme.colors.border,
                 borderLeftWidth: 0.5,
               }}
-              onPress={handleEraseData}
+              onPress={handleDelete}
             >
               <Text
                 style={{
-                  color: theme.colors.error,
                   fontSize: 18,
+                  color: theme.colors.error,
                 }}
               >
-                Erase Data
+                Delete
               </Text>
             </TouchableOpacity>
           </View>
@@ -122,4 +134,4 @@ const EraseAllDataModel = ({ showModal, setShowModal }) => {
   );
 };
 
-export default EraseAllDataModel;
+export default DeleteCategoryModel;

@@ -15,12 +15,7 @@ import React, {
 import { theme } from "../themes";
 import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { Recurrence } from "../types/recurrence";
-import WeeklyReport from "../components/charts/WeeklyReport";
-import { dummyExpenseGroups } from "../dummy";
 import { dummyExpenses as totalExpenses } from "../dummy";
-import YearlyReport from "../components/charts/YearlyReport";
-import Charts from "../components/charts";
-import ExpenseList from "../components/ExpenseList";
 import { ReportPageProps } from "../types/reportPageProps";
 import {
   filterExpensesInPeriod,
@@ -133,13 +128,14 @@ const Reports = ({ reportsSheetRef }: reportProps) => {
         nestedScrollEnabled
         scrollEnabled={false}
         inverted
-        initialNumToRender={5}
-        windowSize={5}
+        initialNumToRender={3}
+        windowSize={3}
+        keyExtractor={(_, ind) => ind.toString()}
         decelerationRate="fast"
         snapToAlignment="start"
         snapToInterval={Dimensions.get("window").width}
         style={{ flex: 1 }}
-        renderItem={({ item: pageProp, index: currPageNum }) => (
+        renderItem={({ item: pageProp }) => (
           <ReportPage
             {...pageProp}
             onPreviousPage={onPreviousPage}

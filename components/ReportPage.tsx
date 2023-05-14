@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, Dimensions, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { ReportPageProps } from "../types/reportPageProps";
@@ -26,10 +26,11 @@ const ReportPage = ({
   const groupedExpenses = groupExpensesByDay(expenses);
   const { start, end } = calculateRange(recurrence, page);
   const periodLabel = formatDateRange(start, end, recurrence);
-
+  // useEffect(() => {
+  //   console.log("page", page);
+  // });
   return (
     <View
-      onLayout={() => console.log(page)}
       style={{
         margin: 16,
         width: Dimensions.get("window").width - 32,

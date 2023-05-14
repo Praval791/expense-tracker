@@ -1,4 +1,4 @@
-https://www.youtube.com/live/axwNcknJbiM?feature=share&t=5191
+https://www.youtube.com/live/k_76RSC9qjo?feature=share&t=3926
 https://aboutreact.com/react-native-login-and-signup/
 https://github.com/nikolovlazar/goodbyemoney-reactnative
 https://stackoverflow.com/questions/45571716/is-there-a-way-to-change-react-navigations-default-back-button-color-on-ios-hea
