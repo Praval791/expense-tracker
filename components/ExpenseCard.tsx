@@ -1,18 +1,29 @@
-import { TouchableOpacity, View, Text, ScrollView } from "react-native";
-import React from "react";
+import { TouchableOpacity, View, Text } from "react-native";
+import React, { Dispatch, SetStateAction } from "react";
+
 import { Entypo, Ionicons, FontAwesome } from "@expo/vector-icons";
 import { theme } from "../themes";
 import { Expense } from "../types/expense";
 import { formatDate } from "../utils/date";
 
+type ExpenseCardProps = {
+  expense: Expense;
+  setSelectedExpense: Dispatch<SetStateAction<Expense>>;
+  setShowDeleteExpenseModel: Dispatch<SetStateAction<boolean>>;
+};
+
 const ExpenseCard = ({
-  _id,
-  amount,
-  recurrence,
-  date,
-  note,
-  category,
-}: Expense) => {
+  expense,
+  setSelectedExpense,
+  setShowDeleteExpenseModel,
+}: ExpenseCardProps) => {
+  const { _id, amount, recurrence, date, note, category } = expense;
+  const handleEdit = () => {
+    setSelectedExpense(expense);
+  };
+  const handleDelete = () => {
+    setSelectedExpense(expense), setShowDeleteExpenseModel(true);
+  };
   return (
     <View // expense Card
       style={{
@@ -48,14 +59,14 @@ const ExpenseCard = ({
             gap: 12,
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDelete}>
             <Ionicons
               name="trash-outline"
               size={18}
               color={theme.colors.error}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => handleEdit()}>
             <Entypo
               name="dots-three-vertical"
               size={18}

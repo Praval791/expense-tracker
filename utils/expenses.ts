@@ -69,3 +69,17 @@ export const getAverageAmountInPeriod = (total: number, period: Recurrence) => {
       return total;
   }
 };
+
+export const isAmountInRange = (enteredAmount: string) => {
+  const parsedAmount = parseFloat(enteredAmount);
+  return parsedAmount > -1000000000 && parsedAmount < 1000000000;
+};
+
+export const isValidAmount = (enteredAmount: string) => {
+  try {
+    const parsedAmount = parseFloat(enteredAmount);
+    return !!parsedAmount;
+  } catch (error) {
+    return false;
+  }
+};

@@ -7,9 +7,10 @@ import {
   Keyboard,
   Platform,
   ScrollView,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ListItem } from "../components/ListItem";
+import { ListItem } from "./ListItem";
 import { theme } from "../themes";
 import { Recurrence } from "../types/recurrence";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
@@ -19,39 +20,33 @@ import DateTimePicker, {
 import { useToast } from "react-native-toast-notifications";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Category } from "../types/category";
-import { categories } from "../dummy";
+import { Expense } from "../types/expense";
 
-const Add = () => {
-  const [amount, setAmount] = React.useState("");
-  const [recurrence, setRecurrence] = React.useState<Recurrence>(
-    Recurrence.None
-  );
-  const [date, setDate] = React.useState(new Date());
-  const [note, setNote] = React.useState("");
-  const [category, setCategory] = React.useState<Category>(categories[0]);
+import { categories } from "../dummy";
+import { isAmountInRange, isValidAmount } from "../utils/expenses";
+
+type AddOrEditExpenseProps = {
+  expense?: Expense;
+  setSelectedExpense: React.Dispatch<React.SetStateAction<Expense>>;
+};
+
+const AddOrEditExpense = ({
+  expense,
+  setSelectedExpense,
+}: AddOrEditExpenseProps) => {
+  const [amount, setAmount] = useState(expense?.amount.toString());
+  const [recurrence, setRecurrence] = useState<Recurrence>(expense?.recurrence);
+  const [date, setDate] = useState(expense?.date);
+  const [note, setNote] = useState(expense?.note);
+  const [category, setCategory] = useState<Category>(expense?.category);
 
   const snapPoints = useMemo(() => ["30%", "60%"], []);
   const sheetRef = useRef<BottomSheet>(null);
-  const [sheetView, setSheetView] = React.useState<"recurrence" | "category">(
+  const [sheetView, setSheetView] = useState<"recurrence" | "category">(
     "recurrence"
   );
 
   const toast = useToast();
-
-  function isAmountInRange(enteredAmount: string) {
-    const parsedAmount = parseFloat(enteredAmount);
-    return parsedAmount > -1000000000 && parsedAmount < 1000000000;
-  }
-
-  function isValidAmount(enteredAmount: string) {
-    try {
-      const parsedAmount = parseFloat(enteredAmount);
-      return !!parsedAmount;
-    } catch (error) {
-      return false;
-    }
-  }
-
   const selectRecurrence = (selectedRecurrence: string) => {
     setRecurrence(selectedRecurrence as Recurrence);
     sheetRef.current?.close();
@@ -136,6 +131,16 @@ const Add = () => {
     });
   };
 
+  const handleCancel = () => {
+    setSelectedExpense(undefined);
+    clearForm();
+  };
+
+  const handleBackButtonClick = () => {
+    handleCancel();
+    return true;
+  };
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       "keyboardDidShow",
@@ -145,8 +150,13 @@ const Add = () => {
       "keyboardDidHide",
       () => {}
     );
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonClick);
 
     return () => {
+      BackHandler.removeEventListener(
+        "hardwareBackPress",
+        handleBackButtonClick
+      );
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
@@ -156,11 +166,17 @@ const Add = () => {
     <>
       <ScrollView
         style={{
-          margin: 16,
+          // padding: 16,
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
           flex: 1,
+          backgroundColor: theme.colors.background,
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: "100%",
         }}
       >
         <View
@@ -274,28 +290,56 @@ const Add = () => {
             }
           />
         </View>
-        <TouchableOpacity
+        <View
           style={{
-            backgroundColor: theme.colors.primaryShadow,
-            paddingHorizontal: 20,
-            paddingVertical: 12,
-            borderRadius: 12,
             marginTop: 32,
+            gap: 8,
+            flexDirection: "row",
           }}
-          onPress={submitExpense}
-          activeOpacity={0.6}
         >
-          <Text
+          <TouchableOpacity
             style={{
-              color: theme.colors.text,
-              fontWeight: "600",
-              fontSize: 18,
-              textAlign: "center",
+              backgroundColor: theme.colors.errorShadow,
+              borderRadius: 12,
+              paddingVertical: 10,
+              flex: 1,
             }}
+            onPress={handleCancel}
+            activeOpacity={0.6}
           >
-            Add expense
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontWeight: "600",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              Cancel
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              backgroundColor: theme.colors.primaryShadow,
+              borderRadius: 12,
+              paddingVertical: 12,
+            }}
+            onPress={submitExpense}
+            activeOpacity={0.6}
+          >
+            <Text
+              style={{
+                color: theme.colors.text,
+                fontWeight: "600",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              Submit
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
       <BottomSheet
         ref={sheetRef}
@@ -307,7 +351,6 @@ const Add = () => {
         )}
         handleStyle={{
           backgroundColor: theme.colors.card,
-
           borderTopLeftRadius: 12,
           borderTopRightRadius: 12,
         }}
@@ -452,4 +495,4 @@ const DateTimePickerDetail = ({ date, setDate, sheetRef }) => {
     </TouchableOpacity>
   );
 };
-export default Add;
+export default AddOrEditExpense;

@@ -22,6 +22,7 @@ import {
   getAverageAmountInPeriod,
 } from "../utils/expenses";
 import ReportPage from "../components/ReportPage";
+import YearlyReport from "../components/charts/YearlyReport";
 
 type reportProps = {
   reportsSheetRef: MutableRefObject<BottomSheet>;
@@ -121,6 +122,7 @@ const Reports = ({ reportsSheetRef }: reportProps) => {
 
   return (
     <>
+      {/* <YearlyReport expenses={totalExpenses} /> */}
       <FlatList
         data={pagePropsData}
         ref={listRef}
