@@ -6,7 +6,3 @@ https://stackoverflow.com/questions/45571716/is-there-a-way-to-change-react-navi
 #### when click on add new expense
 
 -if category is not selected, show alert model
-
-#### remove the flatlist from report screen
-
-- to correct the scroll malfunction of horizontal charts

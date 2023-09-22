@@ -10,7 +10,16 @@ type ExpenseListProps = {
   expenseGroups: ExpensesGroup[];
 };
 const RenderItem = ({ item: { day, expenses, total } }) => (
-  <View style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+  <View
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 4,
+      borderRightColor: theme.colors.barBackground,
+      borderRightWidth: 1,
+      paddingRight: 4,
+    }}
+  >
     <Text
       style={{
         color: theme.colors.textSecondary,
@@ -68,13 +77,17 @@ const RenderItem = ({ item: { day, expenses, total } }) => (
 const ExpenseList = ({ expenseGroups }: ExpenseListProps) => {
   return (
     <FlatList
-      onStartShouldSetResponder={(event) => true}
-      onTouchStart={(e) => e.stopPropagation()}
-      onTouchEnd={(e) => e.stopPropagation()}
-      onTouchMove={(e) => e.stopPropagation()}
       data={expenseGroups}
       keyExtractor={(item) => item.day}
-      ItemSeparatorComponent={() => <View style={{ height: 24 }} />}
+      ItemSeparatorComponent={() => (
+        <View
+          style={{
+            height: 24,
+            borderRightColor: theme.colors.barBackground,
+            borderRightWidth: 1,
+          }}
+        />
+      )}
       renderItem={({ item }) => <RenderItem item={item} />}
     />
   );
